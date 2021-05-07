@@ -24,10 +24,7 @@ module.exports = (env, argv) => {
                   filename: filename('css')
               })
         ]
-
-        //if(isDev) {
-            //base.push(new ESLintPlugin())
-        //}
+        
         return base
     }
 
