@@ -1,7 +1,6 @@
 import { ExcelComponent } from '../../core/ExcelComponent';
 import { createTable } from './table.template';
 import {$} from '../../core/dom'
-import {CODES} from './table.template'
 
 export class Table extends ExcelComponent {
     static className = 'excel__table'
@@ -17,47 +16,36 @@ export class Table extends ExcelComponent {
     }
 
     onMousedown(event) {
-        const typeOfResize = event.target.dataset.resize
-        if(typeOfResize)
+        if(event.target.dataset.resize)
         {
-            console.log(typeOfResize)
             const $resizer = $(event.target)
-            console.log('Event target = ', event.target)
-            console.log('Event target dataset resize = ',
-            event.target.dataset.resize)
             const $parent = $resizer.closest('[data-type="resizable"]')
-            console.log('Parent', $parent)
             const coords = $parent.getCoords()
-            console.log($parent.getCoords())
+            const type = $resizer.data.resize
+
+            //console.log($resizer)
+
+            const cells = this.$root.findAll(`[data-col="${$parent.data.col}"]`)
+
             document.onmousemove = e => {
-                if(typeOfResize === 'row')
-                {
-                    const delta = e.pageY - coords.bottom
-                    const value = coords.height + delta
-                    $parent.$el.style.height = value + 'px'
-                    console.log(delta)
-                }
-                else
+                if(type === 'col')
                 {
                     const delta = e.pageX - coords.right
                     const value = coords.width + delta
-                    $parent.$el.style.width = value + 'px'
-                    const cells = document.getElementsByClassName('cell')
-                    console.log($parent.$el)
-                    console.log(cells)
-                    console.log(0, (CODES.Z - CODES.A))
-                    const start = ($parent.$el.innerText.charCodeAt(0) - CODES.A)
-                    console.log(cells.length - (CODES.Z - CODES.A) + start - 1)
-                    for(let i = start;i <= cells.length - (CODES.Z - CODES.A) + start - 1;i += CODES.Z - CODES.A + 1)
-                    {
-                        cells[i].style.width = value + 'px'
-                    }
-                    console.log(start)
-                    console.log(delta)
+                    //$parent.$el.style.width = value + 'px'
+                    $parent.css({width: value + 'px'})
+                    cells.forEach(el => el.style.width = value + 'px')
+                    //cells.forEach(el => console.log(el))
+                }
+                else
+                {
+                    const delta = e.pageY - coords.bottom
+                    const value = coords.height + delta
+                    //$parent.$el.style.height = value + 'px'
+                    $parent.css({height: value + 'px'})
                 }
                 
             }
-
             document.onmouseup = () => {
                 document.onmousemove = null
             }
