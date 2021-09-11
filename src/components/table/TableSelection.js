@@ -33,7 +33,6 @@ export class TableSelection {
                     //console.log($el.$el.getAttribute('data-id'))
                     this.group[i].removeClass(TableSelection.className)
                     this.group.splice(i, 1)
-                    i--
                     return
                 }
             }
