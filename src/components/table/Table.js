@@ -5,6 +5,7 @@ import { shouldResize } from './table.functions';
 import { TableSelection } from './TableSelection';
 import {isCell} from './table.functions'
 import {$} from '../../core/dom'
+import {matrix} from './table.functions'
 
 export class Table extends ExcelComponent {
     static className = 'excel__table'
@@ -30,24 +31,24 @@ export class Table extends ExcelComponent {
     }
 
     onMousedown(event) {
-        if(shouldResize(event))
+        if (shouldResize(event)) 
         {
-            resizeHandler(this.$root, event)
-        }
-        else if(isCell(event))
+          resizeHandler(this.$root, event)
+        } else if (isCell(event)) 
         {
-            if(event.shiftKey)
-            {
-                const $target = $(event.target)
-                this.selection.selectWithShift($target)
-            }
-            else if(!event.shiftKey)
-            {
-                const $target = $(event.target)
-                this.selection.select($target)
-            }
+          const $target = $(event.target)
+          if (event.shiftKey) 
+          {
+            const $cells = matrix($target, this.selection.current)
+                .map(id => this.$root.find(`[data-id="${id}"]`))
+            this.selection.selectGroup($cells)
+          } else 
+          {
+            this.selection.select($target)
+          }
         }
-        
     }
 }
+
+
 
