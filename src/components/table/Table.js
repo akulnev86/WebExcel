@@ -1,7 +1,7 @@
 import { ExcelComponent } from '../../core/ExcelComponent';
 import { createTable } from './table.template';
 import { resizeHandler } from './table.resize';
-import { shouldResize } from './table.functions';
+import { moveCursor, shouldResize } from './table.functions';
 import { TableSelection } from './TableSelection';
 import {isCell} from './table.functions'
 import {$} from '../../core/dom'
@@ -10,9 +10,11 @@ import {matrix} from './table.functions'
 export class Table extends ExcelComponent {
     static className = 'excel__table'
 
+    rowsQuantity = 30
+
     constructor($root) {
         super($root, {
-            listeners: ['mousedown']
+            listeners: ['mousedown', 'keydown']
         })
     }
 
@@ -21,7 +23,7 @@ export class Table extends ExcelComponent {
     }
 
     toHTML() {
-        return createTable(30)
+        return createTable(this.rowsQuantity)
     }
 
     init() {
@@ -34,7 +36,7 @@ export class Table extends ExcelComponent {
         if (shouldResize(event)) 
         {
           resizeHandler(this.$root, event)
-        } else if (isCell(event)) 
+        } else if (isCell(event))
         {
           const $target = $(event.target)
           if (event.shiftKey) 
@@ -47,6 +49,33 @@ export class Table extends ExcelComponent {
             this.selection.select($target)
           }
         }
+    }
+
+    onKeydown(e)
+    {
+      if (isCell(e))
+      {
+        e = e || window.event;
+
+        if (e.keyCode == '38') {
+            // up arrow
+            moveCursor(e, this.$root, this.selection, 'row-', this.rowsQuantity, 25)
+        }
+        else if (e.keyCode == '40') {
+            // down arrow
+            moveCursor(e, this.$root, this.selection, 'row+', this.rowsQuantity, 25)
+        }
+        else if (e.keyCode == '37') {
+          // left arrow
+          moveCursor(e, this.$root, this.selection, 'col-', this.rowsQuantity, 25)
+        }
+        else if (e.keyCode == '39' || e.keyCode == '9') {
+          // right arrow
+          e.preventDefault()
+          moveCursor(e, this.$root, this.selection, 'col+', this.rowsQuantity, 25)
+        }
+      }
+      
     }
 }
 
