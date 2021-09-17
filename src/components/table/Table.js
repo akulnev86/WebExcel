@@ -1,7 +1,7 @@
 import { ExcelComponent } from '../../core/ExcelComponent';
 import { createTable } from './table.template';
 import { resizeHandler } from './table.resize';
-import { moveCursor, shouldResize } from './table.functions';
+import { nextSelector, shouldResize } from './table.functions';
 import { TableSelection } from './TableSelection';
 import {isCell} from './table.functions'
 import {$} from '../../core/dom'
@@ -51,33 +51,27 @@ export class Table extends ExcelComponent {
         }
     }
 
-    onKeydown(e)
+    onKeydown(event)
     {
-      if (isCell(e))
-      {
-        e = e || window.event;
+      const keys = [
+        'Enter', 
+        'Tab', 
+        'ArrowLeft', 
+        'ArrowLeft',
+        'ArrowRight', 
+        'ArrowDown', 
+        'ArrowUp']
 
-        if (e.keyCode == '38') {
-            // up arrow
-            moveCursor(e, this.$root, this.selection, 'row-', this.rowsQuantity, 25)
-        }
-        else if (e.keyCode == '40') {
-            // down arrow
-            moveCursor(e, this.$root, this.selection, 'row+', this.rowsQuantity, 25)
-        }
-        else if (e.keyCode == '37') {
-          // left arrow
-          moveCursor(e, this.$root, this.selection, 'col-', this.rowsQuantity, 25)
-        }
-        else if (e.keyCode == '39' || e.keyCode == '9') {
-          // right arrow
-          e.preventDefault()
-          moveCursor(e, this.$root, this.selection, 'col+', this.rowsQuantity, 25)
-        }
+      const {key} = event
+      if( keys.includes(event.key) && !event.shiftKey )
+      {
+        event.preventDefault()
+        const id = this.selection.current.id(true)
+        const $next = this.$root.find(nextSelector(key, id))
+        this.selection.select($next)
       }
       
     }
 }
-
 
 
