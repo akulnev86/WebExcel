@@ -30,4 +30,8 @@ export class Excel {
 
         return $root
     }
+
+    destroy() {
+        this.components.forEach(component => component.destroy())
+    }
 }

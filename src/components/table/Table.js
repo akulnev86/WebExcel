@@ -33,14 +33,9 @@ export class Table extends ExcelComponent {
         const $cell = this.$root.find('[data-id="0:0"]')
         this.selection.select($cell)
 
-        //console.log(this.emitter.listeners)
-
-        this.emitter.subscribe('Test', text => {
+        this.$on('formula:input', text => {
           this.selection.current.text(text)
-          console.log('Listeners = ', this.emitter.listeners)
         })
-
-        console.log(this.emitter.listeners)
     }
 
     onMousedown(event) {
