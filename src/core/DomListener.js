@@ -1,3 +1,4 @@
+import { TableSelection } from "../components/table/TableSelection"
 import { capitalize } from "./utils"
 
 export class DomListener {
