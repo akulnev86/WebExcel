@@ -6,6 +6,7 @@ import { TableSelection } from './TableSelection';
 import {isCell} from './table.functions'
 import {$} from '../../core/dom'
 import {matrix} from './table.functions'
+import * as actions from '../../redux/actions'
 
 export class Table extends ExcelComponent {
     static className = 'excel__table'
@@ -25,7 +26,7 @@ export class Table extends ExcelComponent {
     }
 
     toHTML() {
-        return createTable(this.rowsQuantity)
+        return createTable(this.rowsQuantity, this.store.getState())
     }
 
     init() {
@@ -56,7 +57,7 @@ export class Table extends ExcelComponent {
       try
       {
         const data = await resizeHandler(this.$root, event)
-        this.$dispatch({type: 'TABLE_RESIZE', data})
+        this.$dispatch(actions.tableResize(data))
       }
       catch(e)
       {
